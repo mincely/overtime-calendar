@@ -283,7 +283,4 @@ npm run dist
 - 打包目标只有 Windows（`nsis` + `portable`）。要出 macOS / Linux 包，改 `package.json` 里 `build.win` 为对应平台即可，代码本身是跨平台的。
 - 「与便利贴联动」依赖 Windows 的 `%APPDATA%` 路径和 `.exe`，换平台需要另做适配。
 - 联网拉的是第三方整理的节假日数据，不保证与官方公告 100% 同步。
-
-## License
-
-未指定。想开源的话建议补一个（MIT 最省事）；不想开源就把仓库设为 private。
+- 
