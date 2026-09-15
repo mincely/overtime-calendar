@@ -1,0 +1,16 @@
+# 统一换行符为 LF。
+# 不声明的话，在 core.autocrlf=true 的 Windows 上，Git 每次都会提示
+# "LF will be replaced by CRLF"，还会反复改写工作区文件。
+* text=auto eol=lf
+
+# 二进制文件，禁止任何换行转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+
+# Windows 批处理必须是 CRLF，否则可能跑不起来
+*.bat text eol=crlf
+*.cmd text eol=crlf

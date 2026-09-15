@@ -1,0 +1,76 @@
+{
+  "name": "overtime-calendar",
+  "productName": "加班日历",
+  "version": "1.0.0",
+  "private": true,
+  "description": "月历式加班记录：点一天，填加班时段",
+  "author": "Macaron Overtime Calendar",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "concurrently -k -n vite,electron -c cyan,magenta \"vite\" \"wait-on tcp:127.0.0.1:5173 && electron . --dev\"",
+    "build": "vite build",
+    "start": "npm run build && electron .",
+    "smoke": "npm run build && electron . --smoke",
+    "shot": "npm run build && electron . --shot",
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/test-worktime.mjs",
+    "icon": "electron . --icon",
+    "dist": "npm run build && npm run icon && electron-builder --win",
+    "dist:dir": "npm run build && electron-builder --win --dir"
+  },
+  "build": {
+    "appId": "com.macaron.overtime-calendar",
+    "productName": "加班日历",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "!electron/icon.html",
+      "dist/**/*",
+      "package.json"
+    ],
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "加班日历",
+      "artifactName": "OvertimeCalendar-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "OvertimeCalendar-Portable-${version}.${ext}"
+    }
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.9",
+    "concurrently": "^10.0.5",
+    "electron": "^44.3.0",
+    "electron-builder": "^26.15.3",
+    "sass": "^1.104.1",
+    "vite": "^8.3.0",
+    "vue": "^3.5.42",
+    "wait-on": "^9.1.0"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0"
+  }
+}

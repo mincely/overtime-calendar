@@ -1,0 +1,162 @@
+@use './tokens';
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  // 无边框透明窗口：这层必须全透明，圆角外才透得出桌面
+  background: transparent;
+}
+
+body {
+  overflow: hidden;
+  font-family: var(--font-hand);
+  font-size: 15px;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  cursor: default;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border: 2px solid transparent;
+  border-radius: 99px;
+  background-clip: content-box;
+}
+
+/* 纸片本体 */
+.paper {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius);
+  background: linear-gradient(158deg, var(--paper-1) 0%, var(--paper-2) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  box-shadow:
+    0 12px 26px rgba(96, 58, 78, 0.22),
+    0 3px 7px rgba(96, 58, 78, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  overflow: hidden;
+}
+
+/* 图钉 */
+.pin {
+  position: absolute;
+  left: 50%;
+  z-index: 5;
+  width: 25px;
+  height: 25px;
+  margin-left: -12.5px;
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0) 44%),
+    radial-gradient(circle at 50% 64%, var(--pin-1), var(--pin-2) 74%);
+  box-shadow:
+    0 5px 8px rgba(96, 58, 78, 0.3),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.18),
+    inset 0 1px 1px rgba(255, 255, 255, 0.55);
+
+  i {
+    position: absolute;
+    left: 50%;
+    top: 18px;
+    width: 3px;
+    height: 13px;
+    margin-left: -1.5px;
+    border-radius: 2px;
+    background: linear-gradient(to bottom, rgba(96, 58, 78, 0.34), rgba(96, 58, 78, 0.05));
+  }
+}
+
+/* 右下角拉伸手柄 */
+.grip {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 16px;
+  height: 16px;
+  z-index: 6;
+  overflow: hidden;
+  border-bottom-right-radius: 13px;
+  background: repeating-linear-gradient(135deg, transparent 0 3px, var(--accent) 3px 5px);
+  opacity: 0.42;
+  cursor: nwse-resize;
+  transition: opacity 0.16s ease;
+
+  &:hover {
+    opacity: 0.95;
+  }
+}
+
+/* 通用小圆按钮 */
+.tool {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.55);
+  border: 0;
+  border-radius: 50%;
+  transition: transform 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px) scale(1.14);
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-strong);
+    outline-offset: 1px;
+  }
+
+  &--close:hover {
+    background: var(--accent-strong);
+    color: #fff;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

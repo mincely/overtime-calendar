@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>图标</title>
+    <style>
+      /* 加班日历图标：马卡龙日历 + 右下角一枚加班角标。
+         512×512 透明底，缩到 16px 也要认得出是「日历」。 */
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        overflow: hidden;
+      }
+
+      .wrap {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        place-items: center;
+      }
+
+      .cal {
+        position: relative;
+        width: 338px;
+        height: 318px;
+        border-radius: 44px;
+        background: linear-gradient(160deg, #ffe6ee 0%, #ffc9da 100%);
+        box-shadow:
+          0 20px 36px rgba(122, 59, 82, 0.28),
+          0 6px 12px rgba(122, 59, 82, 0.14),
+          inset 0 3px 0 rgba(255, 255, 255, 0.9);
+      }
+
+      /* 顶部装订带 */
+      .cal__top {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 76px;
+        border-radius: 44px 44px 0 0;
+        background: linear-gradient(180deg, #ffb0c9 0%, #ff97b8 100%);
+      }
+
+      /* 两个装订环 */
+      .cal__ring {
+        position: absolute;
+        top: 20px;
+        width: 22px;
+        height: 36px;
+        border-radius: 99px;
+        background: rgba(255, 255, 255, 0.7);
+        box-shadow: inset 0 2px 4px rgba(122, 59, 82, 0.18);
+      }
+
+      .cal__ring--l {
+        left: 92px;
+      }
+
+      .cal__ring--r {
+        right: 92px;
+      }
+
+      /* 日期格 */
+      .grid {
+        position: absolute;
+        left: 34px;
+        right: 34px;
+        top: 106px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 13px;
+      }
+
+      .cell {
+        height: 42px;
+        border-radius: 11px;
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      /* 有加班记录的那几天 */
+      .cell--on {
+        background: #f2648f;
+        box-shadow: 0 3px 7px rgba(242, 100, 143, 0.4);
+      }
+
+      /* 右下角的加班角标 */
+      .badge {
+        position: absolute;
+        right: -6px;
+        bottom: -6px;
+        width: 108px;
+        height: 108px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 34% 28%, #ffd27a, #f0a02a 78%);
+        box-shadow:
+          0 8px 16px rgba(122, 59, 82, 0.3),
+          inset 0 -3px 5px rgba(0, 0, 0, 0.16),
+          inset 0 2px 3px rgba(255, 255, 255, 0.5);
+      }
+
+      /* 角标里的加号 */
+      .badge::before,
+      .badge::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        border-radius: 99px;
+        background: #fff;
+        transform: translate(-50%, -50%);
+      }
+
+      .badge::before {
+        width: 46px;
+        height: 11px;
+      }
+
+      .badge::after {
+        width: 11px;
+        height: 46px;
+      }
+
+      .cal__gloss {
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: radial-gradient(
+          120% 60% at 12% -10%,
+          rgba(255, 255, 255, 0.7),
+          rgba(255, 255, 255, 0) 60%
+        );
+        pointer-events: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <div class="cal">
+        <span class="cal__top"></span>
+        <span class="cal__ring cal__ring--l"></span>
+        <span class="cal__ring cal__ring--r"></span>
+
+        <div class="grid">
+          <span class="cell"></span>
+          <span class="cell cell--on"></span>
+          <span class="cell"></span>
+          <span class="cell"></span>
+          <span class="cell"></span>
+          <span class="cell"></span>
+          <span class="cell cell--on"></span>
+          <span class="cell"></span>
+          <span class="cell cell--on"></span>
+          <span class="cell"></span>
+          <span class="cell"></span>
+          <span class="cell"></span>
+        </div>
+
+        <span class="badge"></span>
+        <span class="cal__gloss"></span>
+      </div>
+    </div>
+  </body>
+</html>

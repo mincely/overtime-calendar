@@ -1,0 +1,118 @@
+@use 'sass:map';
+
+// ─────────────────────────────────────────────────────────────
+// 马卡龙设计令牌
+// 五套配色和便利贴 / 套件同源，切换方式也一样：改 body 上的 data-theme。
+// ─────────────────────────────────────────────────────────────
+
+$font-hand: "Segoe Print", "Bradley Hand", "Comic Sans MS", "STXingkai", "华文行楷",
+  "KaiTi", "楷体", "STKaiti", "YouYuan", "幼圆", "Noto Sans SC", cursive;
+
+// key 一律带引号：不加引号 SCSS 会把 lavender 当成 CSS 颜色值，
+// 插值进选择器时会出警告。
+$palettes: (
+  'strawberry': (
+    paper-1: #ffe4ec,
+    paper-2: #ffcedd,
+    paper-3: #fff2f6,
+    ink: #7a3b52,
+    ink-soft: #b8788e,
+    ink-faint: #d9aebb,
+    accent: #ff8fb0,
+    accent-strong: #f2648f,
+    rule: rgba(255, 143, 176, 0.34),
+    rule-strong: rgba(242, 100, 143, 0.26),
+    pin-1: #ffa3bc,
+    pin-2: #e6537e,
+  ),
+  'mint': (
+    paper-1: #ddf7ec,
+    paper-2: #c4efdd,
+    paper-3: #eefcf6,
+    ink: #2f6355,
+    ink-soft: #6f9d90,
+    ink-faint: #a8c9be,
+    accent: #6fd6ae,
+    accent-strong: #35b98a,
+    rule: rgba(111, 214, 174, 0.34),
+    rule-strong: rgba(53, 185, 138, 0.24),
+    pin-1: #93e5c5,
+    pin-2: #33b287,
+  ),
+  'lavender': (
+    paper-1: #eae4ff,
+    paper-2: #d7cdfd,
+    paper-3: #f4f1ff,
+    ink: #4d4278,
+    ink-soft: #8b80b5,
+    ink-faint: #bbb0d8,
+    accent: #ab99ff,
+    accent-strong: #7d63f0,
+    rule: rgba(171, 153, 255, 0.34),
+    rule-strong: rgba(125, 99, 240, 0.24),
+    pin-1: #c0adff,
+    pin-2: #7f63f0,
+  ),
+  'lemon': (
+    paper-1: #fff7d2,
+    paper-2: #ffe8a4,
+    paper-3: #fffbe8,
+    ink: #6d5720,
+    ink-soft: #a8935c,
+    ink-faint: #cdbb8e,
+    accent: #ffc94d,
+    accent-strong: #e8a300,
+    rule: rgba(255, 201, 77, 0.38),
+    rule-strong: rgba(232, 163, 0, 0.24),
+    pin-1: #ffd76b,
+    pin-2: #e79f00,
+  ),
+  'blueberry': (
+    paper-1: #dcefff,
+    paper-2: #c4e1ff,
+    paper-3: #eef7ff,
+    ink: #2f4d68,
+    ink-soft: #7092ad,
+    ink-faint: #a9c3d6,
+    accent: #7cbcff,
+    accent-strong: #3f92e6,
+    rule: rgba(124, 188, 255, 0.34),
+    rule-strong: rgba(63, 146, 230, 0.24),
+    pin-1: #9dcdff,
+    pin-2: #4a92e0,
+  ),
+);
+
+:root {
+  --font-hand: #{$font-hand};
+
+  --radius: 20px;
+  --radius-sm: 13px;
+  --radius-xs: 9px;
+
+  // 状态色，所有主题共用
+  --ok: #35b98a;
+  --warn: #e8a300;
+  --fail: #e2555f;
+  --info: #6fb0f0;
+
+  // 日期格底色。假日的颜色跟着主题的 accent 走，
+  // 所以这里用 color-mix 而不是写死色值。
+  --cell-work: rgba(255, 255, 255, 0.82);
+  --cell-weekend: rgba(122, 59, 82, 0.07);
+  --cell-holiday: color-mix(in srgb, var(--accent) 30%, transparent);
+  --cell-swap: color-mix(in srgb, var(--info) 26%, transparent);
+
+  // 默认色板
+  @each $key, $value in map.get($palettes, 'strawberry') {
+    --#{$key}: #{$value};
+  }
+}
+
+@each $name, $palette in $palettes {
+  [data-theme='#{$name}'] {
+    @each $key, $value in $palette {
+      --#{$key}: #{$value};
+    }
+  }
+}
