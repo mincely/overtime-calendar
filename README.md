@@ -284,3 +284,6 @@ npm run dist
 - 「与便利贴联动」依赖 Windows 的 `%APPDATA%` 路径和 `.exe`，换平台需要另做适配。
 - 联网拉的是第三方整理的节假日数据，不保证与官方公告 100% 同步。
 - 
+
+##License
+[MIT](LICENSE)
