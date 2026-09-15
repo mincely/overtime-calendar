@@ -7,7 +7,9 @@ import {
   isRestDay,
   computeSegments,
   formatDuration,
-  parseKey
+  parseKey,
+  toMinutes,
+  toHHMM
 } from '@/shared/worktime';
 
 const props = defineProps({
@@ -26,9 +28,31 @@ const draft = ref({ overtime: [], leave: null, note: '' });
 
 const restDay = computed(() => isRestDay(props.kind));
 
-/** 新记录给个顺手的默认时段，省得每次从零填 */
+/** 每段一个稳定 id：用数组下标当 key 的话，删中间一段会让后面几段的输入框内容错位 */
+let segSeq = 0;
+const nextSegId = () => `seg-${(segSeq += 1)}`;
+
+/**
+ * 新记录给个顺手的默认时段。
+ * 关键是「往下错开」：以前每次都给同一个 18:00-20:00，
+ * 点「添加时段」后新的一条和上一条长得一模一样，
+ * 看起来像没加上，而且两条重叠会被重复算成两倍工时。
+ */
 function defaultSegment() {
-  return restDay.value ? { start: '09:00', end: '18:00' } : { start: '18:00', end: '20:00' };
+  const fallback = restDay.value ? { start: '09:00', end: '18:00' } : { start: '18:00', end: '20:00' };
+  const list = draft.value.overtime;
+  if (!list.length) return { id: nextSegId(), ...fallback };
+
+  const last = list[list.length - 1];
+  const lastEnd = toMinutes(last?.end);
+  if (lastEnd == null) return { id: nextSegId(), ...fallback };
+
+  // 从上一段的结束时间接着往后排一小时，最多排到 23:00
+  const start = Math.min(lastEnd, 23 * 60);
+  const end = Math.min(start + 60, 24 * 60);
+  if (end - start < 15) return { id: nextSegId(), ...fallback };
+
+  return { id: nextSegId(), start: toHHMM(start), end: toHHMM(end) };
 }
 
 watch(
@@ -37,7 +61,7 @@ watch(
     if (!props.open) return;
     const record = props.record;
     draft.value = {
-      overtime: (record?.overtime || []).map((s) => ({ ...s })),
+      overtime: (record?.overtime || []).map((s) => ({ id: nextSegId(), ...s })),
       leave: record?.leave ? { ...record.leave } : null,
       note: record?.note || ''
     };
@@ -92,7 +116,10 @@ function toggleLeave(event) {
 
 function save() {
   const clean = {
-    overtime: draft.value.overtime.filter((s) => s.start && s.end),
+    // id 只是界面用来做 key 的，不往存储里写
+    overtime: draft.value.overtime
+      .filter((s) => s.start && s.end)
+      .map((s) => ({ start: s.start, end: s.end })),
     leave: draft.value.leave,
     note: draft.value.note.trim()
   };
@@ -119,7 +146,7 @@ function save() {
           <label class="field__label">加班时段</label>
 
           <ul class="segs">
-            <li v-for="(seg, i) in draft.overtime" :key="i" class="seg">
+            <li v-for="(seg, i) in draft.overtime" :key="seg.id" class="seg">
               <input v-model="seg.start" class="seg__time" type="time" step="300" />
               <span class="seg__dash">–</span>
               <input v-model="seg.end" class="seg__time" type="time" step="300" />

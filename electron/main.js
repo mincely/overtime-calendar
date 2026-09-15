@@ -286,35 +286,55 @@ function runSmokeTest() {
         problems.push(`向导流程测试异常: ${error.message}`);
       }
 
-      // 保存某天：走一遍真实 UI（点开一天 → 点保存），
-      // 专门验证带 Vue 响应式对象的参数能不能过 IPC
+      // 保存某天 + 多次添加：走一遍真实 UI，验证
+      //   a) 带 Vue 响应式对象的参数能过 IPC
+      //   b)「添加时段」能一直加，且新段不和上一段重复
+      //   c) 保存后关掉重开，几段都还在
       let daySaveCheck = null;
       try {
         const result = await win.webContents.executeJavaScript(`(async () => {
           const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+          const segText = () => [...document.querySelectorAll('.editor .seg')]
+            .map((li) => [...li.querySelectorAll('input')].map((i) => i.value).join('-'));
+          const addBtn = () => [...document.querySelectorAll('.editor .ghost')]
+            .find((b) => b.textContent.includes('添加时段'));
+          const saveBtn = () => document.querySelector('.editor .btn--primary');
           const cells = [...document.querySelectorAll('.day')];
-          const target = cells[10] || cells[0];
-          if (!target) return { ok: false, error: '日历里没有格子' };
 
-          target.click();
+          cells[10].click();
           await wait(600);
+          const first = segText();
 
-          const saveBtn = document.querySelector('.editor .btn--primary');
-          if (!saveBtn) return { ok: false, error: '没找到保存按钮' };
+          addBtn().click(); await wait(220);
+          addBtn().click(); await wait(220);
+          const three = segText();
 
-          saveBtn.click();
-          await wait(800);
+          saveBtn().click(); await wait(800);
+          const savedToast = (document.querySelector('.toast') || {}).textContent?.trim() || '';
 
-          return {
-            ok: true,
-            toast: (document.querySelector('.toast') || {}).textContent?.trim() || ''
-          };
+          await wait(2600);
+          document.querySelector('.editor .tool').click(); await wait(500);
+          cells[10].click(); await wait(600);
+          const reopened = segText();
+
+          return { first, three, savedToast, reopened, uniqueCount: new Set(three).size };
         })()`);
 
         daySaveCheck = result;
-        if (!result.ok) problems.push(`保存某天失败: ${result.error}`);
-        else if (/出错|失败|could not be cloned/i.test(result.toast)) {
-          problems.push(`保存某天报错: ${result.toast}`);
+
+        if (result.three.length !== 3) {
+          problems.push(`「添加时段」加不到 3 条，实际只有 ${result.three.length} 条`);
+        }
+        if (result.uniqueCount !== result.three.length) {
+          problems.push(`新增的时段和上一段重复了：${JSON.stringify(result.three)}`);
+        }
+        if (/出错|失败|could not be cloned/i.test(result.savedToast)) {
+          problems.push(`保存报错: ${result.savedToast}`);
+        }
+        if (result.reopened.length !== result.three.length) {
+          problems.push(
+            `重开后段数对不上：保存了 ${result.three.length} 段，重开只剩 ${result.reopened.length} 段`
+          );
         }
       } catch (error) {
         problems.push(`保存某天测试异常: ${error.message}`);

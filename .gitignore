@@ -17,3 +17,15 @@ npm-debug.log*
 .idea/
 .DS_Store
 Thumbs.db
+
+# ── Electron 打包产物（万一被解压到仓库根目录，别让它进来）──
+*.exe
+*.dll
+*.pak
+*.bin
+*.dat
+*.node
+locales/
+resources/
+LICENSE.electron.txt
+LICENSES.chromium.html
