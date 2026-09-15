@@ -283,7 +283,3 @@ Notes to self from building this:
 - Packaging targets Windows only (`nsis` + `portable`). For macOS / Linux, swap `build.win` in `package.json` for the target platform; the code itself is cross-platform.
 - The Sticky Notes integration relies on Windows `%APPDATA%` paths and `.exe` launching, so it needs rework on other platforms.
 - Holiday data comes from a community-maintained dataset and isn't guaranteed to match official announcements exactly.
-
-## License
-
-Not specified. If you plan to open-source it, add one (MIT is the least hassle); otherwise keep the repository private.
